@@ -1,0 +1,15 @@
+<Motor Name="" DiameterMM="0" Length="0" Delays="0" HardwareWeight="0" MFGCode="EX" ThrustMethod="1" ThrustCoefGiven="0">
+  <Nozzle ThroatDia="0.455" ExitDia="1.25" AmbientPressure="14.7" NozzleEfficiency="85" NozzleErosionRate="0" />
+  <Grain Type="1" Length="3.2" Diameter="1.87" EndsInhibited="1" Propellant="Blue Thunder" CoreDiameter="0.625">
+    <Propellant Name="Blue Thunder" Density="0.05871" ISPStar="240.2" BallisticA="0.047" BallisticN="0.321" SpecificHeatRatio="1.25" MolarMass="0" CombustionTemp="0">
+      <Notes>Not sure what values are a and n</Notes>
+    </Propellant>
+  </Grain>
+  <Grain Type="1" Length="3.2" Diameter="1.87" EndsInhibited="1" Propellant="Blue Thunder" CoreDiameter="0.625">
+    <Propellant Name="Blue Thunder" Density="0.05871" ISPStar="240.2" BallisticA="0.047" BallisticN="0.321" SpecificHeatRatio="1.25" MolarMass="0" CombustionTemp="0">
+      <Notes>Not sure what values are a and n</Notes>
+    </Propellant>
+  </Grain>
+  <MotorNotes>
+  </MotorNotes>
+</Motor>
