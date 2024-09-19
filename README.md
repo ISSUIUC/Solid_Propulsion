@@ -33,6 +33,8 @@ It would be preferable if none of the files you are adding have spaces in their 
 Name your branch based on the overall changes you've made. 
 For example, if you were to have created a new part and modified an existing one to create a new crossbeam, name the branch `cad/add-new-crossbeam`.
 Do not name it after any individual changes you've made, rather the sum total.
+Prefer uploading your files directly to using Git from the command line.
+In either case, name your commit as follows `cad: <short description here>`.
 
 ## For code
 It is mandatory none of the files you are adding have spaces in their name, as well as folders.
@@ -46,3 +48,6 @@ When doing normal commits, ensure your commits are reasonably well detailed as t
 Starting a new codebase usually means transitioning from a nonworking prototype to a minimum viable product very rapidly.
 We discourage committing anything until the codebase is in a working state, as zealously logging changes in Git when the code is in such a state of flux hinders productivity.
 
+## Naming Pull Requests
+Prefix your pull requests with the type of branch you've created followed by a short description.
+EG, for a branch named `cad/add-aim9-sidewinder-missile-launcher`, name your pull request `CAD: add AIM-9 sidewinder missile support`.
