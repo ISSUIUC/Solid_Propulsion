@@ -127,7 +127,7 @@ fn main() {
             (temp1_raw + temp2_raw) / 2.0,
             baro_out,
             timestamp.as_secs(),
-            timestamp.as_millis()
+            timestamp.subsec_millis()
         );
 
         thread::sleep(Duration::from_millis(10));
