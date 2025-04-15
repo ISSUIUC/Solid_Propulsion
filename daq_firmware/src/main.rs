@@ -102,8 +102,6 @@ fn main() {
             }
         }
 
-        dbg!(temp1_raw, temp2_raw);
-
         let mut baro_readings = [0u8, 0u8, 0u8];
 
         let baro_xfer = [
@@ -125,8 +123,6 @@ fn main() {
             baro_out /= 4096;
         }
 
-        dbg!(baro_out);
-
         let mut main_adc_readings = [0u8; 8];
 
         // On 8 of U3
@@ -147,11 +143,8 @@ fn main() {
             //     thermo_raw, pressure_raw, thrust_raw
             // );
 
-            dbg!(main_adc_readings);
-
             let thermo_voltage =
                 ((f32::try_from(thermo_raw).unwrap() / 4095.0 * 3.3) / 101.0) * 1.0E6;
-            dbg!(thermo_voltage);
             // Replace with any equation that takes microvolts as an input
             thermo1_final = 2.508355E-2 * thermo_voltage + 7.860106E-8 * thermo_voltage.powi(2)
                 - 2.503131E-10 * thermo_voltage.powi(3)
@@ -162,18 +155,12 @@ fn main() {
                 + 1.057734E-30 * thermo_voltage.powi(8)
                 - 1.052755E-35 * thermo_voltage.powi(9);
 
-            dbg!(thermo1_final);
-
             let pressure_voltage = f64::try_from(pressure_raw).unwrap() / 4095.0 * 3.3;
-            dbg!(pressure_voltage);
             // Find range using equation
             let current = (pressure_voltage / 165.0) * 1.0E3;
             pressure_final = (current - 4.0) / 16.0 * 1500.0;
-            dbg!(pressure_final);
 
-            dbg!(thrust_raw);
             let thrust_voltage = f64::try_from(thrust_raw).unwrap() / 4095.0 * 3.3 / 137.98630137;
-            dbg!(thrust_voltage);
             thrust_final = thrust_voltage / 24.6E-3 * 1500.0;
         }
 
