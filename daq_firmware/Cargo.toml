@@ -5,3 +5,5 @@ edition = "2021"
 
 [dependencies]
 rppal = "0.19.0"
+ctrlc = "3.4.6"
+chrono = "0.4.40"
