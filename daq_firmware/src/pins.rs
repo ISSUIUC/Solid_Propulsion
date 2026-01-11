@@ -1,0 +1,26 @@
+const LORA_DIO5: u8 = 2;
+const LORA_CS_NSS_LINE: u8 = 3;
+const LORA_RESET: u8 = 4;
+const LORA_CS_LINE: u8 = 17;
+const LORA_DIO0: u8 = 27;
+const U3_ENABLE: u8 = 22;
+const MOSI_LINE: u8 = 9;
+const SCLK_LINE: u8 = 11;
+const ADC_U4_C5_LINE: u8 = 5;
+const LORA_DIO1: u8 = 6;
+const LORA_DIO2: u8 = 13;
+const MISO_LINE2: u8 = 19;
+const MUX_A2: u8 = 26;
+const LORA_DIO3: u8 = 14;
+const LORA_DIO4: u8 = 15;
+const IGNITION_SWITCH: u8 = 18;
+const U6_ENABLE: u8 = 23;
+const MUX_A0: u8 = 24;
+const MUX_A1: u8 = 25;
+const TEMPERATURE_SENSOR_U8_CS_LINE: u8 = 8;
+const TEMPERATURE_SENSOR_U7_CS_LINE: u8 = 7;
+const U15_CS_LINE: u8 = 12;
+const U15_INTERRUPT: u8 = 16;
+const MOSI_LINE2: u8 = 20;
+const SCLK_LINE2: u8 = 21;
+
