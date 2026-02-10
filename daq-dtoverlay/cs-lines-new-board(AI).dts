@@ -1,0 +1,70 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "brcm,bcm2835";
+
+    /* ---------- SPI0: 4 devices ---------- */
+
+    fragment@0 {
+        target = <&spi0_cs_pins>;
+        __overlay__ {
+            brcm,pins = <8 7 5 12>;
+            brcm,function = <1>;   /* output */
+        };
+    };
+
+    fragment@1 {
+        target = <&spi0>;
+        __overlay__ {
+            #address-cells = <1>;
+            #size-cells = <0>;
+
+            cs-gpios = <&gpio 8 1>, <&gpio 7 1>, <&gpio 5 1>, <&gpio 12 1>;
+            status = "okay";
+
+            spidev0_0: spidev@0 {
+                compatible = "spidev";
+                reg = <0>;
+                spi-max-frequency = <10000000>;
+            };
+
+            spidev0_1: spidev@1 {
+                compatible = "spidev";
+                reg = <1>;
+                spi-max-frequency = <10000000>;
+            };
+
+            spidev0_2: spidev@2 {
+                compatible = "spidev";
+                reg = <2>;
+                spi-max-frequency = <10000000>;
+            };
+
+            spidev0_3: spidev@3 {
+                compatible = "spidev";
+                reg = <3>;
+                spi-max-frequency = <10000000>;
+            };
+        };
+    };
+
+    /* ---------- SPI1: 1 device ---------- */
+
+    fragment@2 {
+        target = <&spi1>;
+        __overlay__ {
+            #address-cells = <1>;
+            #size-cells = <0>;
+
+            cs-gpios = <&gpio 3 1>;
+            status = "okay";
+
+            spidev1_0: spidev@0 {
+                compatible = "spidev";
+                reg = <0>;
+                spi-max-frequency = <8000000>;
+            };
+        };
+    };
+};
