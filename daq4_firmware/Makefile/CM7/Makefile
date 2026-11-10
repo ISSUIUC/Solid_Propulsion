@@ -39,6 +39,11 @@ C_SOURCES =  \
 ../../CM7/Core/Src/main.c \
 ../../CM7/Core/Src/stm32h7xx_it.c \
 ../../CM7/Core/Src/stm32h7xx_hal_msp.c \
+../../CM7/Core/Src/spi_bus.c \
+../../CM7/Core/Src/daq_timing.c \
+../../CM7/Core/Src/ads7066.c \
+../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi.c \
+../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi_ex.c \
 ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c \
 ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.c \
 ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.c \

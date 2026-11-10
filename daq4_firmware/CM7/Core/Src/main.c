@@ -21,16 +21,32 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "ads7066.h"
+#include "daq_board.h"
+#include "daq_timing.h"
+#include "spi_bus.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+typedef struct
+{
+  uint16_t tc_raw[ADS7066_NUM_CHANNELS]; /* thermocouple amp outputs, AIN0-AIN7 */
+  uint16_t pt_raw[ADS7066_NUM_CHANNELS]; /* pressure transducer / load cell inputs, AIN0-AIN7 */
+  uint32_t sample_count;
+  uint32_t error_count;   /* failed ADC reads; the previous values are kept */
+  uint32_t overrun_count; /* sample periods missed because a read ran long */
+  uint32_t read_us_max;   /* longest read of both ADCs; must stay well under the period */
+  HAL_StatusTypeDef tc_init_status; /* an ADC that failed init is not read */
+  HAL_StatusTypeDef pt_init_status;
+} daq_sample_t;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+/* Per channel, all 16 channels. Each read of both ADCs takes well under 1 ms. */
+#define DAQ_SAMPLE_RATE_HZ 1000U
+_Static_assert(DAQ_SAMPLE_RATE_HZ >= 500U, "Requirement: at least 500 Hz per channel");
 
 /* DUAL_CORE_BOOT_SYNC_SEQUENCE: Define for dual core boot synchronization    */
 /*                             demonstration code based on hardware semaphore */
@@ -54,7 +70,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+/* Bring-up only: watch this in the debugger. Nothing logs it yet (SD card to come). */
+static volatile daq_sample_t daq_sample;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -66,7 +83,51 @@ static void MPU_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+static void daq_count_status(HAL_StatusTypeDef status)
+{
+  if (status != HAL_OK)
+  {
+    daq_sample.error_count = daq_sample.error_count + 1U;
+  }
+}
 
+static void daq_read_adc(spi_bus_dev_t dev, HAL_StatusTypeDef init_status,
+                         volatile uint16_t out[ADS7066_NUM_CHANNELS])
+{
+  uint16_t raw[ADS7066_NUM_CHANNELS];
+  HAL_StatusTypeDef status;
+
+  if (init_status != HAL_OK)
+  {
+    return;
+  }
+  status = ads7066_read_all(dev, raw);
+  daq_count_status(status);
+  if (status == HAL_OK)
+  {
+    for (uint32_t ch = 0U; ch < ADS7066_NUM_CHANNELS; ch++)
+    {
+      out[ch] = raw[ch];
+    }
+  }
+}
+
+/* A failed read only bumps error_count, so the other ADC keeps reading */
+static void daq_read_all(void)
+{
+  const uint32_t start = daq_timing_cycles();
+  uint32_t elapsed_us;
+
+  daq_read_adc(SPI_BUS_DEV_TC_ADC, daq_sample.tc_init_status, daq_sample.tc_raw);
+  daq_read_adc(SPI_BUS_DEV_PT_ADC, daq_sample.pt_init_status, daq_sample.pt_raw);
+
+  elapsed_us = (daq_timing_cycles() - start) / (SystemCoreClock / 1000000U);
+  if (elapsed_us > daq_sample.read_us_max)
+  {
+    daq_sample.read_us_max = elapsed_us;
+  }
+  daq_sample.sample_count = daq_sample.sample_count + 1U;
+}
 /* USER CODE END 0 */
 
 /**
@@ -136,7 +197,20 @@ Error_Handler();
 
   /* Initialize all configured peripherals */
   /* USER CODE BEGIN 2 */
-
+  daq_timing_init();
+  if (spi_bus_init() != HAL_OK)
+  {
+    Error_Handler();
+  }
+  HAL_Delay(5); /* ADS7066 power-up time, tPU */
+  {
+    const ads7066_config_t tc_cfg = {.internal_ref = DAQ_ADC_TC_INTERNAL_REF};
+    const ads7066_config_t pt_cfg = {.internal_ref = DAQ_ADC_PT_INTERNAL_REF};
+    daq_sample.tc_init_status = ads7066_init(SPI_BUS_DEV_TC_ADC, &tc_cfg);
+    daq_sample.pt_init_status = ads7066_init(SPI_BUS_DEV_PT_ADC, &pt_cfg);
+  }
+  const uint32_t period = SystemCoreClock / DAQ_SAMPLE_RATE_HZ;
+  uint32_t next = daq_timing_cycles() + period;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -146,6 +220,18 @@ Error_Handler();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    /* Fixed-rate schedule from the cycle counter, so read time does not add to the period */
+    while ((int32_t)(daq_timing_cycles() - next) < 0)
+    {
+    }
+    daq_read_all();
+    next += period;
+    if ((int32_t)(daq_timing_cycles() - next) >= 0)
+    {
+      /* Missed a period: count it and start a fresh schedule instead of bursting to catch up */
+      daq_sample.overrun_count = daq_sample.overrun_count + 1U;
+      next = daq_timing_cycles() + period;
+    }
   }
   /* USER CODE END 3 */
 }
