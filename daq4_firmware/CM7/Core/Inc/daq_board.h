@@ -6,7 +6,7 @@
   *   Pressure transducer / load cell ADC ("ADC 2")   -> SPI2
   *
   * TODO(pin map): the board pin map is NOT decided yet. Every pin below is a
-  * placeholder. SPI1 on PA4-PA7 matches DAQfirmware3.ioc; the SPI2 pins are
+  * placeholder. SPI1 on PA4-PA7 is the CubeMX default; the SPI2 pins are
   * common SPI2 pins on the STM32H745IIT6 (LQFP176), chosen only so the code
   * compiles. When the schematic is done:
   *   1. Set every port/pin/AF below, and check each AF in the STM32H745 datasheet
@@ -29,7 +29,7 @@
 #endif
 
 /* ---- Bus A: thermocouple ADC (ADS7066) --------------------------------------
-   TODO(pin map): placeholder, taken from DAQfirmware3.ioc (daq4_firmware.ioc has no SPI yet) */
+   TODO(pin map): placeholder, CubeMX default SPI1 pins (daq4_firmware.ioc has no SPI yet) */
 #define DAQ_SPI_TC_INSTANCE   SPI1
 #define DAQ_SPI_TC_CLK_ENABLE() __HAL_RCC_SPI1_CLK_ENABLE()
 #define DAQ_SPI_TC_AF         GPIO_AF5_SPI1

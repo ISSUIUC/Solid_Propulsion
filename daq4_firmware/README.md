@@ -2,7 +2,7 @@
 
 STM32H745IIT6 (dual-core, LQFP176) DAQ firmware. Sensor drivers run on the Cortex-M7. The Cortex-M4 project is unchanged.
 
-The CM7 drivers were first written in `DAQfirmware3/` and ported here. This project's CubeMX output was kept as generated. The driver code lives in its own files and inside `USER CODE` blocks.
+The CM7 drivers were first written in a separate `DAQfirmware3/` project (now removed) and ported here. This project's CubeMX output was kept as generated. The driver code lives in its own files and inside `USER CODE` blocks.
 
 **Status: nothing has run on hardware, and the project will not build until the pin map is decided** (see [Before first build](#before-first-build)).
 
@@ -41,7 +41,7 @@ All functions block until the transfer finishes (polling, no DMA or interrupts).
 
 ## Before first build
 
-1. Decide the pin map, then set every `TODO(pin map)` in `CM7/Core/Inc/daq_board.h`: both SPI buses, both chip selects, and `DAQ_BOARD_GPIO_CLK_ENABLE()`. SPI1 on PA4-PA7 comes from `DAQfirmware3.ioc`, and the SPI2 pins (PB12-PB15) are guesses. `daq4_firmware.ioc` has no SPI pins yet.
+1. Decide the pin map, then set every `TODO(pin map)` in `CM7/Core/Inc/daq_board.h`: both SPI buses, both chip selects, and `DAQ_BOARD_GPIO_CLK_ENABLE()`. Both are placeholders: SPI1 on PA4-PA7 is the CubeMX default, and SPI2 on PB12-PB15 is a guess. `daq4_firmware.ioc` has no SPI pins yet.
 2. Uncomment `DAQ_BOARD_PINS_CONFIRMED`. Until then the build stops with an `#error` on purpose.
 3. Build with `make` from `Makefile/CM7` (needs `arm-none-eabi-gcc`, e.g. `brew install --cask gcc-arm-embedded`).
 
@@ -75,5 +75,5 @@ All functions block until the transfer finishes (polling, no DMA or interrupts).
 ## Testing so far
 
 - All CM7 sources (and `stm32h7xx_hal_spi.c`) pass a clang type-check for Cortex-M7 against this project's HAL headers, with `-Wall -Wextra -Wconversion` and `DAQ_BOARD_PINS_CONFIRMED` defined, and produce no warnings. Without that define, the build stops with the intended `#error`.
-- `ads7066.c` passed host tests (in `DAQfirmware3`) against a simulated ADS7066 that models the register protocol, reset, the test pattern, auto-sequencing and channel IDs. The file is identical here. The tests are not in the repo.
+- `ads7066.c` passed host tests against a simulated ADS7066 that models the register protocol, reset, the test pattern, auto-sequencing and channel IDs. The file is identical here. The tests are not in the repo.
 - **Not tested:** a full `arm-none-eabi-gcc` build and link, `spi_bus.c`, the `main.c` loop timing, and anything on hardware.
