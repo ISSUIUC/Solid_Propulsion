@@ -9,7 +9,9 @@ At this time, there are no plans to separate CAD and code, although the idea sho
 
 # Contributing
 
-We have a few rules for adding new items to this repository that depend on what manner of contribution you plan to add.
+The most important point is that the main branch must always compile, and be the latest up-to-date, working version of the code.
+
+Apart from that, we have a few rules for adding new items to this repository that depend on what manner of contribution you plan to add.
 
 A few general rules of thumb:
 - Do not commit directly to main, open a branch and create a pull request.
